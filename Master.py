@@ -1,6 +1,7 @@
 import requests
 from lxml import etree
 import ReqMold
+import json
 
 START_URL = "https://club.autohome.com.cn/#pvareaid=103419"
 HEADERS = {"User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"}
@@ -13,28 +14,31 @@ class Master_Spider():
         res = self.req.common_get(START_URL)
         return res
     def mainbbs_parse(self):
+        f = open("mainbbs_urls.txt","w",encoding="utf-8")
         html = etree.HTML(self.mainbbs_res())
         name_items = html.xpath('//div[@class="forum-brand-box"]/p/text()')
         info_items = html.xpath('//div[@class="forum-brand-box"]/ul')
-        # func = lambda x:[{i.xpath('@title'):i.xpath("@href")} for i in x.xpath('li/a')]
-        # inf= [{name_items[i]:info_items[i]} for i in range(len(name_items))]
-        # aaa = [{j.xpath('@title'):j.xpath('@href')} for j in info_items[2].xpath('li/a')]
+        print(name_items)
         print(info_items)
-        aaa = info_items[2].xpath('li/a')
-
-        # inf= [{name_items[i]:[{j.xpath('@title'):j.xpath('@href')} for j in info_items[i].xpath('li/a')]} for i in range(len(name_items))]
-        print(aaa)
-        # test_list = []
-        # test = map(func,test_list)
-        # print(test)
+        nam_info = dict(zip(name_items,info_items))
+        for i in nam_info:
+            for j in info_items:
+                a = dict()
+                a[i] = {}
 
 
 
+        for i,j in nam_info.items():
+            a = dict()
+            a[i] = [{k:l} for k in j.xpath('li/a/@title') for l in j.xpath('li/a/@href')]
+            f.write(str(a)+"\n")
+        f.close()
 
 
 if __name__ == '__main__':
     m = Master_Spider()
     m.mainbbs_parse()
+
 
 
 
