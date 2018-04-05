@@ -80,7 +80,7 @@ class Req():
     async def getPage(self,url,page_lists):
         async with aiohttp.ClientSession() as resp:
             async with resp.get(url) as resp:
-                page = await resp.text()
+                page = await resp.text("utf-8","ignore")
                 return page
     #输入url列表
     def asyn_run(self,urls):
@@ -91,20 +91,27 @@ class Req():
         return page_lists#返回网页源代码列表
 
 if __name__ == '__main__':
-    url = "https://www.xin.com/shenzhen/baoma/i{}/?channel=a49b117c44837d110753e751863f53/"
-    urls = [url.format(str(i)) for i in range(1,11)]
+
+
+
+    url = "https://club.autohome.com.cn/bbs/forum-c-66-{}.html?orderby=dateline&qaType=-1#pvareaid=101061"
+    urls = [url.format(str(i)) for i in range(1,3)]
     print(urls)
     a = Req()
     p1 = time.time()
     ol=a.asyn_run(urls)
-    # print(ol)
     print("协程用时",time.time()-p1)
-    p2 = time.time()
-    ll = []
-    for i in urls:
-        h = a.common_get(i)
-        # print(h)
-    print("普通用时",time.time()-p2)
+
+    # we = a.MT_run(urls)
+    # print(we)
+
+
+    # p2 = time.time()
+    # ll = []
+    # for i in urls:
+    #     h = a.common_get(i)
+    #     # print(h)
+    # print("普通用时",time.time()-p2)
 
 
 
